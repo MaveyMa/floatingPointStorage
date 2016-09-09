@@ -84,7 +84,8 @@ void displayFloatingPointInMemory(int d)
 {
     string sign,
            exponent,
-           significand;
+           shortSignificand,
+           eightBitSignificand;
     int excess15;
     const int BIAS = 15;
     //====================================================
@@ -108,27 +109,28 @@ void displayFloatingPointInMemory(int d)
         sign = "0";
     }
     //====================================================
-    //2. Convert to binary.
-    significand = decimalBecomesBinary(d);
+    //2. Determine significand; Convert integer to binary
+    shortSignificand = decimalBecomesBinary(d);
+    eightBitSignificand = shortSignificand; //make a copy for excess15 calculation
     //Extra spaces are concatenated with 0's to ensure significand 8-bit length
-    for (int i = significand.length(); i < 8; i++)
+    for (int i = shortSignificand.length(); i < 8; i++)
     {
-        significand += '0';
+        eightBitSignificand += '0';
     }
     //====================================================
-    //3. Take the original exponent from 0.1..... * 2^original
+    //3. Determine excess15 Bias Formula: (2^(n-1)) - 1
+    //   (Take the original exponent from 0.1..... * 2^original)
     //   Original is: How many decimal places move over, or length() of bit string
-    //   Bias Formula: (2^(n-1)) - 1
-    //   Since there are 5 bits in exponent, n = 5 and the Bias becomes 15
+    //   Bias is: 15. Because there're 5 bits in exponent, n = 5 in Bias Formula
     //   Excess-15-exponent = original + Bias
-    excess15 = significand.length() + BIAS;
+    excess15 = shortSignificand.length() + BIAS;
     //====================================================
     //4. Convert excess-15 exponent into binary
     exponent = decimalBecomesBinary(excess15);
     //====================================================
     //5. Voilà! Now, display everything. (:
     cout << "_______________________" << endl;
-    cout << "| " << sign << " | " << exponent << " | " << significand << " |" << endl;
+    cout << "| " << sign << " | " << exponent << " | " << eightBitSignificand << " |" << endl;
     cout << "-----------------------" << endl;
     return;
 }//END DISPLAY FLOATING POINT IN MEMORY
