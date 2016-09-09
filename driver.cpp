@@ -16,6 +16,13 @@
 using namespace std;
 
 // *************************************
+void displayFloatingPointInMemory(int d);
+// SUMMARY: Takes input integer, and displays how it's stored as floating-point in memory
+// PRECONDITIONS: Takes in user-input to be converted to binary
+// POSTCONDITIONS: 14-bit model will output to command line (1-Sign)(5-Exponent)(8-Significand)
+// *************************************
+//
+// *************************************
 bool isIntegerOver8Bits(int d);
 // SUMMARY: Checks if user's integer value is too large for the system
 // PRECONDITIONS: Pass in user's integer value to be changed into binary
@@ -52,13 +59,11 @@ int main()
 {
     int userNumber;
 
-    //1. TODO: Take an integer value as input. (Using integers to simplify program.)
+    //1. Take an integer value as input. (Using integers to simplify program.)
     cout << "Welcome. To begin, enter an integer value: ";
     cin >> userNumber;
-    cout << "Great! You said: " << userNumber << endl;
-    cout << endl;
-    //2. TODO: Error check, if number is too large to be stored in our system, cout message
-    //         Integers that are more than 8 bits cannot be held in this system.
+    //2. Error check, if number is too large to be stored in our system, cout message
+    //   Integers that are more than 8 bits cannot be held in this system.
     if (isIntegerOver8Bits(userNumber))
     {
         cout << "Sorry, " << userNumber << " is too large to be stored in our system. Try another number!" << endl;
@@ -73,7 +78,54 @@ int main()
     cout << "| 1-bit, Sign | 5-bit, Exponent | 8-bit, Significand |" << endl;
     cout << "------------------------------------------------------" << endl;
     */
+
+    displayFloatingPointInMemory(userNumber);
     return EXIT_SUCCESS;
+}
+
+void displayFloatingPointInMemory(int d)
+{
+    if (d == 0)
+    {
+        cout << "________________________" << endl;
+        cout << "| 0 | 00000 | 00000000 |" << endl;
+        cout << "------------------------" << endl;
+        return;
+    }
+    string sign,
+           exponent,
+           significand;
+    int excess15;
+    const int BIAS = 15;
+    //1. Determine sign, positive (0) or negative (1)
+    if (d < 0)
+    {
+        sign = "1";
+        d = positiveVersion(d); //treat integer like a positive
+    }
+    else
+    {
+        sign = "0";
+    }
+
+    //2. Convert to binary.
+    significand = decimalBecomesBinary(d);
+
+    //3. Take the original exponent from 0.1..... * 2^original
+    //   Original is: How many decimal places move over, or length() of bit string
+    //   Bias Formula: (2^(n-1)) - 1
+    //   Since there are 5 bits in exponent, n = 5 and the Bias becomes 15
+    //   Excess-15-exponent = original + Bias
+    excess15 = significand.length() + BIAS;
+
+    //4. Convert excess-15 exponent into binary
+    exponent = decimalBecomesBinary(excess15);
+
+    //5. Voilà! Now, display everything. (:
+    cout << "_______________________" << endl;
+    cout << "| " << sign << " | " << exponent << " | " << significand << " |" << endl;
+    cout << "-----------------------" << endl;
+    return;
 }
 
 bool isIntegerOver8Bits(int d)
