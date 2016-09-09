@@ -58,10 +58,11 @@ string reverseString(string s);
 int main()
 {
     int userNumber;
-
+    //====================================================
     //1. Take an integer value as input. (Using integers to simplify program.)
     cout << "Welcome. To begin, enter an integer value: ";
     cin >> userNumber;
+    //====================================================
     //2. Error check, if number is too large to be stored in our system, cout message
     //   Integers that are more than 8 bits cannot be held in this system.
     if (isIntegerOver8Bits(userNumber))
@@ -69,16 +70,25 @@ int main()
         cout << "Sorry, " << userNumber << " is too large to be stored in our system. Try another number!" << endl;
     }
     else
-    {
-        //3. TODO: Display a diagram that demonstrates how the number will be stored in memory.
+    {//====================================================
+    //3. Display a diagram that demonstrates how user's number will be stored in memory.
         displayFloatingPointInMemory(userNumber);
+    //  ______________________________________________________
+    //  | 1-bit, Sign | 5-bit, Exponent | 8-bit, Significand |
+    //  ------------------------------------------------------
     }
-
     return EXIT_SUCCESS;
-}
+}//END MAIN
 
 void displayFloatingPointInMemory(int d)
 {
+    string sign,
+           exponent,
+           significand;
+    int excess15;
+    const int BIAS = 15;
+    //====================================================
+    //0. The case that it's zero
     if (d == 0)
     {
         cout << "________________________" << endl;
@@ -86,11 +96,7 @@ void displayFloatingPointInMemory(int d)
         cout << "------------------------" << endl;
         return;
     }
-    string sign,
-           exponent,
-           significand;
-    int excess15;
-    const int BIAS = 15;
+    //====================================================
     //1. Determine sign, positive (0) or negative (1)
     if (d < 0)
     {
@@ -101,34 +107,42 @@ void displayFloatingPointInMemory(int d)
     {
         sign = "0";
     }
-
+    //====================================================
     //2. Convert to binary.
     significand = decimalBecomesBinary(d);
-
+    //Extra spaces are concatenated with 0's to ensure significand 8-bit length
+    for (int i = significand.length(); i < 8; i++)
+    {
+        significand += '0';
+    }
+    //====================================================
     //3. Take the original exponent from 0.1..... * 2^original
     //   Original is: How many decimal places move over, or length() of bit string
     //   Bias Formula: (2^(n-1)) - 1
     //   Since there are 5 bits in exponent, n = 5 and the Bias becomes 15
     //   Excess-15-exponent = original + Bias
     excess15 = significand.length() + BIAS;
-
+    //====================================================
     //4. Convert excess-15 exponent into binary
     exponent = decimalBecomesBinary(excess15);
-
+    //====================================================
     //5. Voilà! Now, display everything. (:
     cout << "_______________________" << endl;
     cout << "| " << sign << " | " << exponent << " | " << significand << " |" << endl;
     cout << "-----------------------" << endl;
     return;
-}
+}//END DISPLAY FLOATING POINT IN MEMORY
 
 bool isIntegerOver8Bits(int d)
 {
     string checkBinary;
+    //====================================================
     //1. Make sure integer d is positive.
     d = positiveVersion(d);
+    //====================================================
     //2. Convert from positive integer to binary.
     checkBinary = decimalBecomesBinary(d);
+    //====================================================
     //3. If over 8 bits, return true. Acceptable bits are range [1, 8] inclusive.
     return (checkBinary.length() > 8);
 }//END IS INTEGER OVER 8 BITS
