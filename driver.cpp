@@ -70,16 +70,10 @@ int main()
     }
     else
     {
-        cout << "Oh my stars! You passed! ^_^ " << userNumber << " turned out to be a great number." << endl;
+        //3. TODO: Display a diagram that demonstrates how the number will be stored in memory.
+        displayFloatingPointInMemory(userNumber);
     }
-    //3. TODO: Display a diagram that demonstrates how the number will be stored in memory.
-    /*
-    cout << "______________________________________________________" << endl;
-    cout << "| 1-bit, Sign | 5-bit, Exponent | 8-bit, Significand |" << endl;
-    cout << "------------------------------------------------------" << endl;
-    */
 
-    displayFloatingPointInMemory(userNumber);
     return EXIT_SUCCESS;
 }
 
